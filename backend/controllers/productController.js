@@ -1,24 +1,24 @@
 import { createProduct, getAllProduct, getProductById, getProductByName, updateProductById, deleteProductById } from '../services/productService.js';
 import { requireAdmin } from '../utils/auth.js';
 
-export async function missingProductData(name, price,stock) {
+function validateProductData(reply, name, price, stock) {
   if (!name || price == null || stock == null) {
-    return reply.code(400).send({ error: 'Missing product data.' });
+    reply.code(400).send({ error: 'Missing product data.' });
+    return false;
   }
+  return true;
 }
 
 
+
 export async function addProduct(request, reply) {
-  const { name, price, stock } = request.body;
+  const { name, price, stock, image } = request.body;
 
-  const isAdmin = await requireAdmin(request, reply);
-  if (!isAdmin) {
-    return reply.code(403).send({ error: 'Only admin can add products.' });
-  }
+if (!requireAdmin(request, reply)) return;
 
-  missingProductData(name,price,stock);
+  if (!validateProductData(reply, name, price, stock)) return;
 
-  const result = await createProduct(name, price, stock);
+  const result = await createProduct(name, price, stock, image);
 
   if (result.success) {
     return reply.code(201).send({ message: 'Product created successfully.' });
@@ -47,8 +47,7 @@ export async function updateProduct(request, reply) {
   const { id } = request.params;
   const { name, price, stock } = request.body;
 
-  missingProductData(name,price,stock);
-
+  if (!validateProductData(reply, name, price, stock)) return;
 
   const existingProduct = await getProductById(id);
   if (!existingProduct) {

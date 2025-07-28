@@ -26,7 +26,8 @@ async function init() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE  NOT NULL,
             price INTEGER NOT NULL,
-            stock INTEGER NOT NULL
+            stock INTEGER NOT NULL,
+            image TEXT NOT NULL
         );
     `);
 

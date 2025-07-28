@@ -4,7 +4,7 @@ export async function getProductByName(name) {
   return await db.get('SELECT * FROM products WHERE name = ?', [name]);
 }
 
-export async function createProduct(name, price, stock) {
+export async function createProduct(name, price, stock, image) {
   try {
     const existing = await getProductByName(name);
     if (existing) {
@@ -12,8 +12,8 @@ export async function createProduct(name, price, stock) {
     }
 
     await db.run(
-      `INSERT INTO products (name, price, stock) VALUES (?, ?, ?)`,
-      [name, price, stock]
+      `INSERT INTO products (name, price, stock, image) VALUES (?, ?, ?, ?)`,
+      [name, price, stock, image]
     );
 
     return { success: true };
@@ -31,11 +31,11 @@ export async function getProductById(id) {
   return await db.get('SELECT * FROM products WHERE id = ?', [id]);
 }
 
-export async function updateProductById(id, name, price, stock) {
+export async function updateProductById(id, name, price, stock, image) {
   try {
     await db.run(
-      'UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?',
-      [name, price, stock, id]
+      'UPDATE products SET name = ?, price = ?, stock = ? , image = ? WHERE id = ?',
+      [name, price, stock, image, id]
     );
     return true;
   } catch (err) {

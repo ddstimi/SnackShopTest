@@ -22,10 +22,7 @@ export async function placeOrder(request, reply) {
 
 
 export async function getOrders(request, reply) {
- const isAdmin = await requireAdmin(request, reply);
-  if (!isAdmin) {
-    return reply.code(403).send({ error: 'Only admin can list all orders.' });
-  }
+if (!requireAdmin(request, reply)) return;
    try {
     const result = await getAllOrders();
     if(!result || result.length === 0){
