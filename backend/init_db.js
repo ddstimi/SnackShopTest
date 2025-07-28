@@ -24,7 +24,7 @@ async function init() {
     await db.exec(`
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
+            name TEXT UNIQUE  NOT NULL,
             price INTEGER NOT NULL,
             stock INTEGER NOT NULL
         );
@@ -52,12 +52,12 @@ async function init() {
         );
     `);
 
-    const hashedPassword = await bcrypt.hash(process.env.TESTPASSWORD, 10);
+    const hashedPassword = await bcrypt.hash(process.env.ADMINPASSWORD, 10);
 
     try {
         await db.run(
             `INSERT INTO users (username, password) VALUES (?, ?)`,
-            ['testuser', hashedPassword]
+            ['admin', hashedPassword]
         );
         console.log('Inserted test user.');
     } catch (e) {
