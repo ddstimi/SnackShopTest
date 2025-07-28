@@ -1,4 +1,4 @@
-import { createProduct } from '../services/productService.js';
+import { createProduct, getAllProduct } from '../services/productService.js';
 
 export async function addProduct(request, reply) {
   const { username } = request.body;
@@ -21,4 +21,15 @@ export async function addProduct(request, reply) {
   } else {
     return reply.code(500).send({ error: 'Failed to create product.' });
   }
+}
+
+export async function getProducts(reply) {
+      const results = await getAllProduct();
+
+      if(!results || results.length === 0){
+        return reply.code(204).send({ error: 'There are no products to show.' });
+      }else{
+        return reply.code(200).send(results);
+      }
+
 }

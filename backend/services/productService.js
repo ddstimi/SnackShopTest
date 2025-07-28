@@ -23,3 +23,6 @@ export async function createProduct(name, price, stock) {
   }
 }
 
+export async function getAllProduct() {
+  return await db.all('SELECT * FROM products');
+}
