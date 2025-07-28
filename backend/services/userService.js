@@ -19,3 +19,10 @@ export async function createUser(username, password) {
   }
 }
 
+export async function validateUserCredentials(username, password) {
+  const user = await getUserByUsername(username);
+  if (!user) return false;
+
+  const valid = await bcrypt.compare(password, user.password);
+  return valid;
+}

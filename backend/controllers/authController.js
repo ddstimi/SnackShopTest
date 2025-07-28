@@ -1,4 +1,4 @@
-import { createUser, getUserByUsername } from '../services/userService.js';
+import { createUser, getUserByUsername, validateUserCredentials } from '../services/userService.js';
 
 export async function registerUser(request, reply) {
   const { username, password } = request.body;
@@ -20,3 +20,16 @@ export async function registerUser(request, reply) {
   }
 }
 
+export async function loginUser(request, reply) {
+  const { username, password } = request.body;
+
+  if (!username || !password) {
+    return reply.code(400).send({ error: 'Username and password are required.' });
+  }
+const valid = await validateUserCredentials(username, password);
+  if (!valid) {
+    return reply.code(401).send({ error: 'Invalid credentials.' });
+  }
+
+  return reply.code(200).send({ message: 'Login successful.' });
+}
