@@ -1,4 +1,5 @@
 import fastifyCookie from '@fastify/cookie';
+import { getUserByUsername } from '../services/userService.js';
 
 export function registerAuth(fastify) {
   fastify.register(fastifyCookie, {
@@ -6,17 +7,19 @@ export function registerAuth(fastify) {
     parseOptions: {},
   });
 
- fastify.decorateRequest('user', null);
+  fastify.decorateRequest('user', null);
 
   fastify.addHook('onRequest', async (request, reply) => {
-    const signedUsername = request.cookies.username;
+        const raw = request.cookies?.username;
+    const { valid, value: username } = request.unsignCookie(raw || '');
 
-    if (signedUsername) {
-      const { value, valid } = fastify.unsignCookie(signedUsername);
-      if (valid) {
+    if (valid && username) {
+      const user = await getUserByUsername(username);
+      if (user) {
         request.user = {
-          username: value,
-          isAdmin: value === 'admin',
+          id: user.id,
+          username: user.username,
+          isAdmin: user.username === 'admin'
         };
       }
     }

@@ -59,9 +59,9 @@ async function init() {
             `INSERT INTO users (username, password) VALUES (?, ?)`,
             ['admin', hashedPassword]
         );
-        console.log('Inserted test user.');
+        console.log('Inserted admin user.');
     } catch (e) {
-        console.log('Test user already exists.');
+        console.log('admin user already exists.');
     }
 
     console.log('Database initialized.');
