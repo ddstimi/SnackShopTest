@@ -26,3 +26,20 @@ export async function createProduct(name, price, stock) {
 export async function getAllProduct() {
   return await db.all('SELECT * FROM products');
 }
+
+export async function getProductById(id) {
+  return await db.get('SELECT * FROM products WHERE id = ?', [id]);
+}
+
+export async function updateProductById(id, name, price, stock) {
+  try {
+    await db.run(
+      'UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?',
+      [name, price, stock, id]
+    );
+    return true;
+  } catch (err) {
+    console.error('Failed to update product:', err);
+    return false;
+  }
+}
