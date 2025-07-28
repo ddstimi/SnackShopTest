@@ -1,4 +1,4 @@
-import { createProduct, getAllProduct, getProductById, getProductByName, updateProductById } from '../services/productService.js';
+import { createProduct, getAllProduct, getProductById, getProductByName, updateProductById, deleteProductById } from '../services/productService.js';
 import { requireAdmin } from '../utils/auth.js';
 
 export async function missingProductData(name, price,stock) {
@@ -68,5 +68,26 @@ export async function updateProduct(request, reply) {
     return reply.code(200).send({ message: 'Product updated successfully.' });
   } else {
     return reply.code(500).send({ error: 'Failed to update product.' });
+  }
+}
+
+export async function deleteProduct(request, reply) {
+  if (!requireAdmin(request, reply)) {
+    return reply.code(403).send({ error: 'Only admin can update products.' });
+  }
+
+  const { id } = request.params;
+
+  const existingProduct = await getProductById(id);
+  if (!existingProduct) {
+    return reply.code(404).send({ error: 'Product not found.' });
+  }
+
+  const success = await deleteProductById(id);
+
+  if (success) {
+    return reply.code(200).send({ message: 'Product deleted successfully.' });
+  } else {
+    return reply.code(500).send({ error: 'Failed to delete product.' });
   }
 }

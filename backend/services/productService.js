@@ -43,3 +43,13 @@ export async function updateProductById(id, name, price, stock) {
     return false;
   }
 }
+
+export async function deleteProductById(id) {
+  try {
+    await db.run('DELETE FROM products WHERE id = ?', [id]);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to delete product:', err);
+    return { success: false, error: err };
+  }
+}
