@@ -23,6 +23,9 @@ export async function validateUserCredentials(username, password) {
   const user = await getUserByUsername(username);
   if (!user) return false;
 
-  const valid = await bcrypt.compare(password, user.password);
-  return valid;
+  const match = await bcrypt.compare(password, user.password);
+  return {
+    authenticated: match,
+    isAdmin: match && username === 'admin',
+  };
 }

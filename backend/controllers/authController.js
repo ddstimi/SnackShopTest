@@ -26,10 +26,15 @@ export async function loginUser(request, reply) {
   if (!username || !password) {
     return reply.code(400).send({ error: 'Username and password are required.' });
   }
-const valid = await validateUserCredentials(username, password);
-  if (!valid) {
-    return reply.code(401).send({ error: 'Invalid credentials.' });
+
+   const { authenticated, isAdmin } = await validateUserCredentials(username, password);
+
+  if (!authenticated) {
+    return reply.code(401).send({ authenticated: false });
   }
 
-  return reply.code(200).send({ message: 'Login successful.' });
+  return reply.code(200).send({
+    authenticated: true,
+    isAdmin: isAdmin,
+  });
 }
