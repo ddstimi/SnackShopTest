@@ -1,0 +1,21 @@
+import bcrypt from 'bcrypt';
+import db from '../db/db.js';
+
+export async function getUserByUsername(username) {
+  return await db.get('SELECT * FROM users WHERE username = ?', [username]);
+}
+
+export async function createUser(username, password) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    await db.run(
+      'INSERT INTO users (username, password) VALUES (?, ?)',
+      [username, hashedPassword]
+    );
+    return true;
+  } catch (err) {
+    console.error('Error creating user:', err);
+    return false;
+  }
+}
+
