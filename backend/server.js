@@ -1,12 +1,12 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import cookie from '@fastify/cookie';
 import routes from './routes/routes.js';
+import { registerAuth } from './utils/auth.js';
 
 const fastify = Fastify({ logger: true });
 
 await fastify.register(cors, { origin: true, credentials: true });
-await fastify.register(cookie);
+await registerAuth(fastify);
 
 await fastify.register(routes);
 

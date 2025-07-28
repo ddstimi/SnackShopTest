@@ -1,10 +1,11 @@
 import { createProduct, getAllProduct } from '../services/productService.js';
+import { requireAdmin } from '../utils/auth.js';
 
 export async function addProduct(request, reply) {
-  const { username } = request.body;
   const { name, price, stock } = request.body;
 
-  if (username !== 'admin') {
+  const isAdmin = await requireAdmin(request, reply);
+  if (!isAdmin) {
     return reply.code(403).send({ error: 'Only admin can add products.' });
   }
 

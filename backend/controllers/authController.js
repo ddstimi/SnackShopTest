@@ -32,9 +32,28 @@ export async function loginUser(request, reply) {
   if (!authenticated) {
     return reply.code(401).send({ authenticated: false });
   }
+  console.log('Setting cookie for:', username);
+    reply.setCookie('username', username, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 3600 * 24,
+        signed: true,
+    });
+  console.log('cookie set for:', username);
+
 
   return reply.code(200).send({
     authenticated: true,
     isAdmin: isAdmin,
   });
+}
+
+export async function logoutUser(reply) {
+ reply.clearCookie('username', {
+  path: '/', 
+  signed: true
+});
+  return reply.code(200).send({ message: 'Logged out successfully.' });
 }
