@@ -29,7 +29,7 @@ export async function addProduct(request, reply) {
   }
 }
 
-export async function getProducts(reply) {
+export async function getProducts(request,reply) {
       const results = await getAllProduct();
 
       if(!results || results.length === 0){

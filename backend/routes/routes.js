@@ -1,5 +1,5 @@
 import { logoutUser, registerUser, loginUser } from '../controllers/authController.js';
-import { placeOrder } from '../controllers/orderController.js';
+import { placeOrder,getOrders } from '../controllers/orderController.js';
 import { addProduct, getProducts, updateProduct, deleteProduct } from '../controllers/productController.js';
 
 export default async function routes(fastify, opts) {
@@ -11,4 +11,6 @@ export default async function routes(fastify, opts) {
     fastify.put('/api/products/:id', updateProduct);
     fastify.delete('/api/products/:id', deleteProduct);
     fastify.post('/api/order', placeOrder);
+    fastify.get('/api/orders', getOrders);
+
 }

@@ -55,7 +55,7 @@ export async function placeOrderService(userId, cart) {
 
     return {
   orderId,
-  orderedBy: user?.username || 'Ismeretlen',
+  orderedBy: user?.username || 'unknown',
   total: totalPrice,
   items: cart.map(item => ({
     name: item.name,
@@ -69,4 +69,9 @@ export async function placeOrderService(userId, cart) {
     await db.run('ROLLBACK');
     throw err;
   }
+}
+
+
+export async function getAllOrders() {
+  return await db.all('SELECT * FROM orders');
 }
