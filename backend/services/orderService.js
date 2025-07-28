@@ -50,27 +50,28 @@ export async function placeOrderService(userId, cart) {
     console.log(`\x1b[35m Végösszeg: ${totalPrice} Ft \x1b[0m`);
     console.log('\x1b[35m Vásárlás időpontja: '+date.created_at+'\x1b[0m');
 
-
     await db.run('COMMIT');
 
     return {
-  orderId,
-  orderedBy: user?.username || 'unknown',
-  total: totalPrice,
-  items: cart.map(item => ({
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    total: item.quantity * item.price
-  }))
-};
+        orderId,
+        orderedBy: user?.username || 'unknown',
+        total: totalPrice,
+        items: await Promise.all(cart.map(async item => {
+            const product = await db.get('SELECT name, price FROM products WHERE id = ?', item.id);
+            return {
+                name: product.name,
+                quantity: item.quantity,
+                price: product.price,
+                total: item.quantity * product.price
+            };
+        }))
+    };
 
   } catch (err) {
     await db.run('ROLLBACK');
     throw err;
   }
 }
-
 
 export async function getAllOrders() {
   return await db.all('SELECT * FROM orders');
