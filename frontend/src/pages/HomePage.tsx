@@ -90,7 +90,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="lg:h-screen h-[calc(100vh-15rem)] relative bg-[url('./assets/home-sweets.jpg')] bg-cover bg-center pt-20">
+      <div className="lg:h-screen h-[calc(100vh-15rem)] relative bg-[url('./assets/home-sweets.jpg')] bg-cover bg-center pt-19">
         <div className="absolute inset-0 bg-black/40 z-0" />
         <div className="relative z-10 flex flex-col justify-end h-full p-6">
           <div className="text-white text-center mb-16 md:mb-24">
