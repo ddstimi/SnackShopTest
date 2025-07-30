@@ -59,7 +59,7 @@ const handleRegister = async () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-cyan-800/50 to-lorange/70 font-poppins">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-cyan-800/30 to-lorange/60 font-poppins">
       <div className="relative w-[60rem] h-[32rem] lg:rounded-xl rounded-lg lg:shadow-xl overflow-hidden lg:bg-white/20 backdrop-blur m-2 lg:m-0">
         <div className="absolute lg:inset-0 lg:bg-[url('./assets/fast-food.jpg')] lg:bg-cover lg:filter lg:blur-xs lg:scale-110 lg:opacity-80 h-full" />
 

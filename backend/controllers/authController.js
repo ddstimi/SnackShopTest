@@ -50,10 +50,9 @@ export async function loginUser(request, reply) {
   });
 }
 
-export async function logoutUser(reply) {
- reply.clearCookie('username', {
-  path: '/', 
-  signed: true
-});
-  return reply.code(200).send({ message: 'Logged out successfully.' });
+export async function logoutUser(req, reply) {
+  reply
+    .clearCookie('username', { path: '/' })
+    .send({ message: 'Logged out successfully' });
 }
+
