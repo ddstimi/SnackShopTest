@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {api} from '../../api/axios';
+import { Navigate, Router, useNavigate } from 'react-router-dom';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -7,6 +8,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
+   const navigate = useNavigate();
 
 
    const handleLogin = async () => {
@@ -21,6 +23,8 @@ export default function AuthPage() {
     setLoginError('');
     setUsername('');
     setPassword('');
+    navigate("/home");
+
   } catch (err: any) {
     console.error('Login failed:', err.response?.data || err.message);
     setLoginError(
@@ -55,7 +59,7 @@ const handleRegister = async () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-sage/90 to-lorange/70 font-poppins">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-cyan-800/50 to-lorange/70 font-poppins">
       <div className="relative w-[60rem] h-[32rem] lg:rounded-xl rounded-lg lg:shadow-xl overflow-hidden lg:bg-white/20 backdrop-blur m-2 lg:m-0">
         <div className="absolute lg:inset-0 lg:bg-[url('./assets/fast-food.jpg')] lg:bg-cover lg:filter lg:blur-xs lg:scale-110 lg:opacity-80 h-full" />
 
