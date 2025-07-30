@@ -1,27 +1,55 @@
 import { useState } from 'react';
 import {api} from '../../api/axios';
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
+
 
    const handleLogin = async () => {
-    try {
-      const res = await api.post('/login', { username, password });
-      console.log('Login success:', res.data);
-    } catch (err: any) {
-      console.error('Login failed:', err.response?.data || err.message);
+    if (!username || !password) {
+      setLoginError('Username or password cannot be empty.');
+      return;
     }
-  };
 
-  const handleRegister = async () => {
-    try {
-      const res = await api.post('/register', { username, password });
-      console.log('Register success:', res.data);
-    } catch (err: any) {
-      console.error('Register failed:', err.response?.data || err.message);
+  try {
+    const res = await api.post('/login', { username, password });
+    console.log('Login success:', res.data);
+    setLoginError('');
+  } catch (err: any) {
+    console.error('Login failed:', err.response?.data || err.message);
+    setLoginError(
+      err.response?.data?.error ||
+      (err.response?.data?.authenticated === false
+        ? 'Invalid username or password.'
+        : 'Something went wrong during login.')
+    );
+  }
+};
+
+const handleRegister = async () => {
+    if (!username || !password) {
+      setRegisterError('Username and password cannot be empty.');
+      return;
     }
-  };
+
+  try {
+    const res = await api.post('/register', { username, password });
+    console.log('Register success:', res.data);
+    setRegisterError('');
+    setIsLogin(true);
+  } catch (err: any) {
+    console.error('Register failed:', err.response?.data || err.message);
+    setRegisterError(
+      err.response?.data?.error ||
+      'Something went wrong during registration.'
+    );
+  }
+};
+
 
 
   return (
@@ -55,6 +83,7 @@ export default function AuthPage() {
                   <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 border rounded" />
                   <input type="password" value={password}  onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" />
                   <button type="submit" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Login</button>
+                  {loginError && <p className="text-red-600">{loginError}</p>}
                   <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
                     <div className="flex items-center justify-center w-full gap-2">
                       <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
@@ -75,6 +104,7 @@ export default function AuthPage() {
                   <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 border rounded" />
                   <input type="password" placeholder="Password"  value={password}  onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded" />
                   <button type="submit" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Register</button>
+                   {registerError && <p className="text-red-600">{registerError}</p>}
                    <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
                       <div className="flex items-center justify-center w-full gap-2 ">
                         <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
