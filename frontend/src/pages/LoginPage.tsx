@@ -19,6 +19,8 @@ export default function AuthPage() {
     const res = await api.post('/login', { username, password });
     console.log('Login success:', res.data);
     setLoginError('');
+    setUsername('');
+    setPassword('');
   } catch (err: any) {
     console.error('Login failed:', err.response?.data || err.message);
     setLoginError(
