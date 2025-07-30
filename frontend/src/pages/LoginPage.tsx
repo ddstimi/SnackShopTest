@@ -1,0 +1,86 @@
+import { useState } from 'react';
+
+export default function AuthPage() {
+  const [isLogin, setIsLogin] = useState(true);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-sage/90 to-lorange/70 font-poppins">
+      <div className="relative w-[60rem] h-[32rem] lg:rounded-xl rounded-lg lg:shadow-xl overflow-hidden lg:bg-white/20 backdrop-blur m-2 lg:m-0">
+        <div className="absolute lg:inset-0 lg:bg-[url('./assets/fast-food.jpg')] lg:bg-cover lg:filter lg:blur-xs lg:scale-110 lg:opacity-80 h-full" />
+
+        <div className="relative w-full lg:h-full h-[80%] overflow-hidden">
+          <div
+            className={`absolute top-0 left-0 h-full w-[200%] flex transition-transform duration-700 ease-in-out ${
+              isLogin ? 'translate-x-0' : '-translate-x-1/2'
+            }`}
+          >
+            <div className="w-1/2 flex flex-col lg:flex-row">
+              <div className="w-1/2 hidden lg:flex items-center justify-center text-white text-center p-6">
+                <div>
+                  <h1 className="text-4xl font-extrabold mb-2">Welcome back!</h1>
+                  <p className="mb-10">Don't have an account yet? Join us and start snackin'!</p>
+                  <button
+                    onClick={() => setIsLogin(false)}
+                    className="px-16 py-2 border border-white rounded-lg hover:bg-white/40 bg-white/20 transition"
+                  >
+                    Register
+                  </button>
+                </div>
+              </div>
+
+              <div className="w-full lg:w-1/2 flex items-center justify-center bg-white/80 p-8 z-10 gap-9">
+                <form className="w-full max-w-sm space-y-6">
+                  <h2 className="text-2xl font-bold">Login</h2>
+                  <input type="text" placeholder="Username" className="w-full p-2 border rounded" />
+                  <input type="password" placeholder="Password" className="w-full p-2 border rounded" />
+                  <button type="button" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Login</button>
+                  <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
+                    <div className="flex items-center justify-center w-full gap-2">
+                      <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
+                      <p className="text-gray-500 text-sm">or</p>
+                      <hr className="flex-grow h-px bg-gradient-to-r from-gray-200 to-gray-400 border-0" />
+                    </div>
+                    <button type="button" onClick={() => setIsLogin(false)} className="px-10 py-2 border border-gray-400 rounded-lg hover:bg-gray-600/30 bg-gray-400/10 transition mt-4">Register</button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+
+            <div className="w-1/2 flex flex-col lg:flex-row">
+              <div className="w-full lg:w-1/2 flex items-center justify-center bg-white/80 p-8 z-10 gap-6">
+                <form className="w-full max-w-sm space-y-6">
+                  <h2 className="text-2xl font-bold">Register</h2>
+                  <input type="text" placeholder="Username" className="w-full p-2 border rounded" />
+                  <input type="password" placeholder="Password" className="w-full p-2 border rounded" />
+                  <button className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Register</button>
+                   <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
+                      <div className="flex items-center justify-center w-full gap-2 ">
+                        <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
+                        <p className="text-gray-500 text-sm">or</p>
+                        <hr className="flex-grow h-px bg-gradient-to-r from-gray-200 to-gray-400 border-0" />
+                      </div>
+                      <button type="button" onClick={() => setIsLogin(true)} className="px-10 py-2 border relative align-middle border-gray-400 rounded-lg hover:bg-gray-600/30 bg-gray-400/10 transition mt-4">Login</button>
+                    </div>
+                </form>
+              </div>
+              <div className="w-1/2 hidden lg:flex items-center justify-center text-white text-center p-6">
+                <div>
+                  <h1 className="text-4xl font-extrabold mb-2">Taste the World</h1>
+                  <p className="mb-10">Already have an account? Click below to log in.</p>
+                  <button type="button"
+                    onClick={() => setIsLogin(true)}
+                    className="px-16 py-2 border border-white rounded-lg hover:bg-white/40 bg-white/20 transition"
+                  >
+                    Login
+                  </button>
+                   
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
