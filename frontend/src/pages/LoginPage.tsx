@@ -1,7 +1,28 @@
 import { useState } from 'react';
-
+import {api} from '../../api/axios';
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+   const handleLogin = async () => {
+    try {
+      const res = await api.post('/login', { username, password });
+      console.log('Login success:', res.data);
+    } catch (err: any) {
+      console.error('Login failed:', err.response?.data || err.message);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      const res = await api.post('/register', { username, password });
+      console.log('Register success:', res.data);
+    } catch (err: any) {
+      console.error('Register failed:', err.response?.data || err.message);
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-bl from-sage/90 to-lorange/70 font-poppins">
@@ -29,11 +50,11 @@ export default function AuthPage() {
               </div>
 
               <div className="w-full lg:w-1/2 flex items-center justify-center bg-white/80 p-8 z-10 gap-9">
-                <form className="w-full max-w-sm space-y-6">
+                <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="w-full max-w-sm space-y-6">
                   <h2 className="text-2xl font-bold">Login</h2>
-                  <input type="text" placeholder="Username" className="w-full p-2 border rounded" />
-                  <input type="password" placeholder="Password" className="w-full p-2 border rounded" />
-                  <button type="button" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Login</button>
+                  <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 border rounded" />
+                  <input type="password" value={password}  onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="w-full p-2 border rounded" />
+                  <button type="submit" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Login</button>
                   <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
                     <div className="flex items-center justify-center w-full gap-2">
                       <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
@@ -49,11 +70,11 @@ export default function AuthPage() {
 
             <div className="w-1/2 flex flex-col lg:flex-row">
               <div className="w-full lg:w-1/2 flex items-center justify-center bg-white/80 p-8 z-10 gap-6">
-                <form className="w-full max-w-sm space-y-6">
+                <form className="w-full max-w-sm space-y-6" onSubmit={(e) => { e.preventDefault(); handleRegister(); }}>
                   <h2 className="text-2xl font-bold">Register</h2>
-                  <input type="text" placeholder="Username" className="w-full p-2 border rounded" />
-                  <input type="password" placeholder="Password" className="w-full p-2 border rounded" />
-                  <button className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Register</button>
+                  <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-2 border rounded" />
+                  <input type="password" placeholder="Password"  value={password}  onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded" />
+                  <button type="submit" className="w-full border-dorange border-1 font-bold  rounded-lg text-white hover:bg-lorange/80 bg-lorange/100 p-2 mt-2 transform">Register</button>
                    <div className="lg:invisible md:invisible visible flex flex-row flex-1 justify-center flex-wrap">
                       <div className="flex items-center justify-center w-full gap-2 ">
                         <hr className="flex-grow h-px bg-gradient-to-r from-gray-400 to-gray-200 border-0" />
