@@ -15,7 +15,7 @@ export async function placeOrder(request, reply) {
     const result = await placeOrderService(user.id, cart);
     return reply.code(201).send({ message: 'Order placed: '+ {result}, orderId: result.orderId });
   } catch (err) {
-    return reply.code(400).send({ error: err.message });
+    return reply.code(400).send({ error: err.message ||"Ismeretlen hiba" });
   }
 }
 

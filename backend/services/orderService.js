@@ -10,7 +10,7 @@ export async function placeOrderService(userId, cart) {
       const product = await db.get('SELECT * FROM products WHERE id = ?', item.id);
       if (!product) throw new Error(`Product ID ${item.id} does not exist.`);
       if (product.stock < item.quantity) {
-        throw new Error(`Insufficient stock for product: ${product.name}`);
+        throw new Error(`Nincs elég mennyiség ebből a termékből: ${product.name}`);
       }
 
       totalPrice += product.price * item.quantity;

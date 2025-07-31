@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../../api/axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Product {
   id: number;
@@ -10,11 +11,20 @@ interface Product {
   image?: string;
 }
 
+interface CartItem extends Product {
+  quantity: number;
+}
+
+
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const productRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const [cartVisible, setCartVisible] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
 
 
   useEffect(() => {
@@ -50,6 +60,52 @@ export default function HomePage() {
     }
   };
 
+  const toggleCart = () => setCartVisible(prev => !prev);
+
+const addToCart = (product: Product) => {
+  setCartItems(prevItems => {
+    const existing = prevItems.find(item => item.id === product.id);
+    if (existing) {
+      return prevItems.map(item =>
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      return [...prevItems, { ...product, quantity: 1 }];
+    }
+  });
+};
+
+const changeQuantity = (id: number, delta: number) => {
+  setCartItems(prevItems =>
+    prevItems
+      .map(item =>
+        item.id === id ? { ...item, quantity: item.quantity + delta } : item
+      )
+      .filter(item => item.quantity > 0)
+  );
+};
+
+const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+
+const handlePurchase = async () => {
+  try {
+    const res = await api.post(
+      '/order',
+      { cart: cartItems },
+      { withCredentials: true }
+    );
+    toast.success('Sikeres vásárlás!');
+    setCartItems([]);
+    setCartVisible(false);
+  } catch (err: any) {
+    console.error('Full error response:', err.response);
+    const errorMessage = err.response?.data?.error || 'Ismeretlen hiba történt';
+    toast.error(<><div className='grid grid-cols-1'><strong className=''>Hiba történt</strong><div className=''>{errorMessage}</div></div></>)
+  }
+};
+
+
   return (
     <div className="font-poppins">
       <div
@@ -68,15 +124,55 @@ export default function HomePage() {
             >
               Rendelés
             </button>
-            <button>
-              <span
-                className={`material-symbols-outlined font-semibold px-4 py-1 rounded-full transition ${
-                  scrolled ? 'bg-lorange text-white hover:bg-lorange/70 hover:border-dorange hover:border-px' : 'bg-white/90 text-lorange hover:bg-white'
-                }`}
-              >
-                shopping_cart
-              </span>
-            </button>
+            <button type='button' onClick={toggleCart}>
+  <span
+    className={`material-symbols-outlined font-semibold px-4 py-1 rounded-full transition relative inline-flex items-center p-3 text-sm text-center ${
+      scrolled ? 'bg-cyan-800 text-white hover:bg-cyan-800/50 hover:border-cyan-800 hover:border-px' : 'bg-white/90 text-cyan-800 hover:bg-white'
+    }`}
+  >
+    shopping_cart
+  </span>
+<div className={`absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold  ${scrolled ? 'bg-white text-lorange hover:bg-white' :  'bg-lorange text-white hover:bg-lorange/70 hover:border-dorange hover:border-px'} rounded-full -top-2 right-16`}>
+  {cartItems.length}
+</div>
+</button>
+
+            {cartVisible && (
+  <div className="absolute right-0 top-10 w-80 bg-white rounded-xl shadow-xl p-4 z-50">
+    <h3 className="text-lg font-bold mb-2 text-cyan-800">Kosár</h3>
+    {cartItems.length === 0 ? (
+      <p className="text-gray-500">A kosár üres.</p>
+    ) : (
+      <div className="space-y-3">
+        {cartItems.map(item => (
+          <div key={item.id} className="flex justify-between items-center border-b-1 py-1 border-gray-100">
+            <span className='text-dorange/80'>{item.name}</span>
+            <span className='text-cyan-900'>{item.price} Ft</span>
+
+            <div className="flex items-center gap-1">
+              <button onClick={() => changeQuantity(item.id, -1)} className="px-2 py-0 bg-gray-200 rounded">-</button>
+              <input
+                type="number"
+                value={item.quantity}
+                readOnly
+                className="w-10 text-center border border-gray-300 rounded text-gray-800"
+              />
+              <button onClick={() => changeQuantity(item.id, 1)} className="px-2 py-0 bg-gray-200 rounded">+</button>
+            </div>
+          </div>
+        ))}
+        <div className=" pt-2 flex justify-between font-semibold">
+          <span className='text-cyan-900'>Összesen:</span>
+          <span className='text-cyan-900'>{total} Ft</span>
+        </div>
+        <button className="w-full bg-lorange text-white py-2 rounded hover:bg-lorange/80 transition" onClick={handlePurchase}>
+          Vásárlás
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
             <button type='button' onClick={handleLogout}>
               <span
                 className={`material-symbols-outlined font-semibold px-4 py-1 rounded-full transition ${
@@ -110,7 +206,7 @@ export default function HomePage() {
           Termékeink
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 lg:max-w-7xl md:gap-6 md:max-w-7xl items-center  justify-center content-center place-items-center gap-4 max-w-sm container-sm  mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-6 lg:max-w-7xl md:gap-6 md:max-w-7xl items-center  justify-center content-center place-items-center gap-4 max-w-sm container-sm  mx-auto">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
@@ -131,9 +227,13 @@ export default function HomePage() {
                   <span className="text-lg font-bold text-lorange w-fit">
                     {product.price} Ft
                   </span>
-                  <button className="bg-lorange/90 text-white lg:font-semibold px-2 py-1 rounded-full hover:bg-lorange transition">
-                    Kosárba
-                  </button>
+                  <button type='button'
+  onClick={() => addToCart(product)}
+  className="bg-lorange/90 text-white lg:font-semibold px-2 py-1 rounded-full hover:bg-lorange transition"
+>
+  Kosárba
+</button>
+
                 </div>
               </div>
             </motion.div>
