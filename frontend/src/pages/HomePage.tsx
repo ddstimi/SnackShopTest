@@ -9,6 +9,7 @@ interface Product {
   name: string;
   price: number;
   image?: string;
+  stock: number;
 }
 
 interface CartItem extends Product {
@@ -66,14 +67,23 @@ const addToCart = (product: Product) => {
   setCartItems(prevItems => {
     const existing = prevItems.find(item => item.id === product.id);
     if (existing) {
+      if (existing.quantity >= product.stock) {
+        toast.warning('Nincs több elérhető ebből a termékből!');
+        return prevItems;
+      }
       return prevItems.map(item =>
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
+      if (product.stock < 1) {
+        toast.warning('Ez a termék elfogyott!');
+        return prevItems;
+      }
       return [...prevItems, { ...product, quantity: 1 }];
     }
   });
 };
+
 
 const changeQuantity = (id: number, delta: number) => {
   setCartItems(prevItems =>
@@ -141,7 +151,20 @@ const handlePurchase = async () => {
   <div className="absolute right-0 top-10 w-80 bg-white rounded-xl shadow-xl p-4 z-50">
     <h3 className="text-lg font-bold mb-2 text-cyan-800">Kosár</h3>
     {cartItems.length === 0 ? (
+        <div className="space-y-3">
       <p className="text-gray-500">A kosár üres.</p>
+      <div className=" pt-2 flex justify-between font-semibold">
+          <span className='text-cyan-900'>Összesen:</span>
+          <span className='text-cyan-900'>{total} Ft</span>
+        </div>
+        <button onClick={() => setCartItems([])} className="w-full bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition disabled:opacity-50" disabled>
+            Kosár ürítése
+        </button>
+
+        <button className="w-full bg-lorange text-white py-2 rounded hover:bg-lorange/80 transition disabled:opacity-50" disabled>
+          Vásárlás
+        </button>
+      </div>
     ) : (
       <div className="space-y-3">
         {cartItems.map(item => (
@@ -159,12 +182,18 @@ const handlePurchase = async () => {
               />
               <button onClick={() => changeQuantity(item.id, 1)} className="px-2 py-0 bg-gray-200 rounded">+</button>
             </div>
+            <button onClick={() => setCartItems(prev => prev.filter(p => p.id !== item.id))} className="text-lorange/80 hover:text-dorange">✕</button>
+
           </div>
         ))}
         <div className=" pt-2 flex justify-between font-semibold">
           <span className='text-cyan-900'>Összesen:</span>
           <span className='text-cyan-900'>{total} Ft</span>
         </div>
+        <button onClick={() => setCartItems([])} className="w-full bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition">
+            Kosár ürítése
+        </button>
+
         <button className="w-full bg-lorange text-white py-2 rounded hover:bg-lorange/80 transition" onClick={handlePurchase}>
           Vásárlás
         </button>
