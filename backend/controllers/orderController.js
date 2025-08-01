@@ -20,16 +20,21 @@ export async function placeOrder(request, reply) {
 }
 
 
-
 export async function getOrders(request, reply) {
-if (!requireAdmin(request, reply)) return;
-   try {
+  if (!requireAdmin(request, reply)) return;
+  
+  try {
     const result = await getAllOrders();
-    if(!result || result.length === 0){
-        return reply.code(204).send({ error: 'There are no products to show.' });
-      }else{
-        return reply.code(200).send(result);
-      }  } catch (err) {
-    return reply.code(400).send({ error: err.message });
-  }
-}
+    
+    if (!result || result.length === 0) {
+      return reply.code(200).send([]);
+    }
+    
+    return reply.code(200).send(result);
+  } catch (err) {
+    console.error('Error fetching orders:', err);
+    return reply.code(400).send({ 
+      error: 'Failed to fetch orders',
+      details: err.message 
+    });
+  }}

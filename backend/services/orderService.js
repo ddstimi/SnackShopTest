@@ -74,5 +74,54 @@ export async function placeOrderService(userId, cart) {
 }
 
 export async function getAllOrders() {
-  return await db.all('SELECT * FROM orders');
+  try {
+    const orders = await db.all(`
+      SELECT 
+        o.id as orderId,
+        o.user_id as userId,
+        u.username,
+        o.total_price as totalPrice,
+        o.created_at as createdAt,
+        oi.product_id as productId,
+        p.name as productName,
+        p.image as productImage,
+        oi.quantity,
+        oi.price_at_purchase as price
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.id
+      LEFT JOIN order_items oi ON o.id = oi.order_id
+      LEFT JOIN products p ON oi.product_id = p.id
+      ORDER BY o.created_at DESC
+    `);
+    
+    const orderMap = new Map();
+    
+    orders.forEach(row => {
+      if (!orderMap.has(row.orderId)) {
+        orderMap.set(row.orderId, {
+          orderId: row.orderId,
+          userId: row.userId,
+          username: row.username || 'Guest',
+          totalPrice: row.totalPrice,
+          createdAt: row.createdAt,
+          items: []
+        });
+      }
+      
+      if (row.productId) {
+        orderMap.get(row.orderId).items.push({
+          productId: row.productId,
+          name: row.productName || 'Unknown Product',
+          image: row.productImage || '/default.png',
+          quantity: row.quantity,
+          price: row.price
+        });
+      }
+    });
+    
+    return Array.from(orderMap.values());
+  } catch (err) {
+    console.error('Database error:', err);
+    throw new Error('Failed to fetch orders from database');
+  }
 }

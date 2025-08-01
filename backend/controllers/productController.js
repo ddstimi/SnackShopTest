@@ -45,7 +45,7 @@ export async function updateProduct(request, reply) {
   }
 
   const { id } = request.params;
-  const { name, price, stock } = request.body;
+  const { name, price, stock,image } = request.body;
 
   if (!validateProductData(reply, name, price, stock)) return;
 
@@ -61,7 +61,7 @@ export async function updateProduct(request, reply) {
     }
   }
 
-  const success = await updateProductById(id, name, price, stock);
+  const success = await updateProductById(id, name, price, stock, image);
 
   if (success) {
     return reply.code(200).send({ message: 'Product updated successfully.' });

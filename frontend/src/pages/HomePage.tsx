@@ -245,9 +245,9 @@ const handlePurchase = async () => {
               transition={{ delay: index * 0.1 }}
             >
               <img
-                  src={`http://localhost:3000/assets${product.image}` || 'https://via.placeholder.com/300x200.png?text=Snack'}
+                  src={`http://localhost:3000/assets/snacks/${product.image}` || 'https://via.placeholder.com/300x200.png?text=Snack'}
                 alt={product.name}
-                className="lg:w-[10rem] lg:h-[10rem] w-[8rem] h-[8rem] object-cover align-middle m-auto"
+                className="lg:w-[10rem] lg:h-[10rem] w-[8rem] h-[8rem] object-contain align-middle m-auto"
               />
               <div className="lg:p-4 p-2">
                 <h3 className="text-xl font-semibold">{product.name}</h3>
