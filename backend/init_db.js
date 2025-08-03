@@ -60,7 +60,7 @@ async function init() {
             `INSERT INTO users (username, password) VALUES (?, ?)`,
             ['admin', hashedPassword]
         );
-        console.log('Inserted admin user.');
+        // console.log('Inserted admin user.');
     } catch (e) {
         console.log('admin user already exists.');
     }

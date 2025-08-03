@@ -4,7 +4,7 @@ import routes from './routes/routes.js';
 import { registerAuth } from './utils/auth.js';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
-import fastifyCors from 'fastify-cors';
+
 
 const fastify = Fastify({ logger: true });
 
@@ -26,5 +26,8 @@ fastify.register(fastifyStatic, {
 
 fastify.listen({ port: 3000 }, (err, address) => {
   if (err) throw err;
-  console.log(`Server: ${address}`);
+  // console.log(`Server: ${address}`);
 });
+
+
+

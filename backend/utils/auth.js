@@ -35,6 +35,10 @@ export function requireAuth(request, reply) {
 }
 
 export function requireAdmin(request, reply) {
-  return request.user?.isAdmin === true;
+    if (!request.user?.isAdmin) {
+    reply.code(403).send({ error: 'Not admin.' });
+    return false;
+  }
+  return true;
 }
 

@@ -18,8 +18,15 @@ interface Order {
 }
 
 export const OrderService = {
-  getAll: async (): Promise<Order[]> => {
-    const response = await api.get("/orders");
-    return response.data;
+  async getAll() {
+    try {
+      const response = await api.get("/orders");
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        return "NotAdmin";
+      }
+      throw error;
+    }
   },
 };

@@ -12,6 +12,7 @@ function validateProductData(reply, name, price, stock) {
 
 
 export async function addProduct(request, reply) {
+  
   const { name, price, stock, image } = request.body;
 
 if (!requireAdmin(request, reply)) return;
@@ -38,6 +39,7 @@ export async function getProducts(request,reply) {
         return reply.code(200).send(results);
       }
 }
+
 
 export async function updateProduct(request, reply) {
   if (!requireAdmin(request, reply)) {

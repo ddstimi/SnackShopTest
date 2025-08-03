@@ -9,9 +9,16 @@ interface Product {
 }
 
 export const ProductService = {
-  getAll: async (): Promise<Product[]> => {
-    const response = await api.get("/products");
-    return response.data;
+  async getAll() {
+    try {
+      const response = await api.get("/products");
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        return "NotAdmin";
+      }
+      throw error;
+    }
   },
 
   getById: async (id: number): Promise<Product> => {

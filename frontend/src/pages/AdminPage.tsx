@@ -3,7 +3,6 @@ import { api } from "../../api/axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { form } from "framer-motion/client";
 import { ProductService } from "../service/ProductService";
 import { OrderService } from "../service/OrderService";
 
@@ -39,6 +38,7 @@ export default function AdminPage() {
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdminVerified, setIsAdminVerified] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -61,6 +61,8 @@ export default function AdminPage() {
   const [scrolled, setScrolled] = useState(false);
   const productRef = useRef<HTMLDivElement>(null);
   const orderRef = useRef<HTMLDivElement>(null);
+  const adminVerifiedRef = useRef(false);
+  const productsFetchRef = useRef(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,36 +73,52 @@ export default function AdminPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const verifyAdminAndLoadData = async () => {
+      if (adminVerifiedRef.current) return;
+      adminVerifiedRef.current = true;
+      try {
+        setIsLoading(true);
+        const ordersData = await OrderService.getAll();
+        if (ordersData === "NotAdmin") {
+          navigate("/home");
+          toast.error("Nincs admin jogosultságod!");
+          return;
+        }
+        setIsAdminVerified(true);
+        setOrders(Array.isArray(ordersData) ? ordersData : []);
+        if (!productsFetchRef.current) {
+          productsFetchRef.current = true;
+          await fetchProducts();
+        }
+        setIsLoading(false);
+      } catch (err: any) {
+        if (err.response?.status === 403) {
+          navigate("/home");
+          return;
+        }
+        toast.error("Hiba az adatok betöltésekor");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyAdminAndLoadData();
+  }, []);
+
   const fetchProducts = async () => {
     try {
       const data = await ProductService.getAll();
+      if (data === "NotAdmin" && !adminVerifiedRef.current) {
+        navigate("/home");
+        return;
+      }
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
       toast.error("Hiba a termékek betöltésekor");
     }
   };
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchOrders = async () => {
-    setIsLoading(true);
-    try {
-      const data = await OrderService.getAll();
-      console.log("Fetched orders:", data);
-      setOrders(data);
-      console.log("Orders state updated:", orders);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-      toast.error("Hiba a rendelések betöltésekor");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const scrollToProducts = () => {
     productRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,7 +138,7 @@ export default function AdminPage() {
 
   const openEditModal = (product: Product) => {
     {
-      console.log("asd: " + product.image);
+      // console.log("asd: " + product.image);
     }
     setEditingProduct(product);
     setFormData({
@@ -144,7 +162,7 @@ export default function AdminPage() {
   };
 
   const saveProduct = async () => {
-    console.log("img: " + formData.image);
+    // console.log("img: " + formData.image);
 
     const productData = {
       name: formData.name,
@@ -152,7 +170,7 @@ export default function AdminPage() {
       stock: Number(formData.stock),
       image: formData.image || undefined,
     };
-    console.log("imggg: " + productData.image);
+    // console.log("img after: " + productData.image);
 
     try {
       if (editMode && editingProduct) {
@@ -172,6 +190,19 @@ export default function AdminPage() {
       );
     }
   };
+
+  if (!isAdminVerified || isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-lorange"></div>
+          <p className="mt-4 text-lg text-gray-700">
+            Jogosultság ellenőrzése...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -264,9 +295,9 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {products.map((product) => (
+                    {products.map((product, idx) => (
                       <motion.tr
-                        key={product.id}
+                        key={idx++}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
@@ -277,7 +308,7 @@ export default function AdminPage() {
                             src={
                               product.image
                                 ? `http://localhost:3000/assets/snacks/${product.image}`
-                                : "http://localhost:3000/assets/snacks/snacklogo.png"
+                                : "http://localhost:3000/assets/snacks/no_image.jpg"
                             }
                             alt={product.name}
                             className="lg:h-10 lg:w-10 h-5 w-5 text-xs lg:text-xl object-contain"
@@ -333,9 +364,9 @@ export default function AdminPage() {
         </h2>
 
         <div className="max-w-3xl mx-auto space-y-4 max-h-xxs">
-          {orders.map((order) => (
+          {orders.map((order, idx) => (
             <motion.div
-              key={order.orderId}
+              key={idx++}
               className="bg-white/80 rounded-xl shadow p-4 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -347,8 +378,11 @@ export default function AdminPage() {
                 <span>{new Date(order.createdAt).toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-4 lg:gap-16">
-                {order.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center lg:gap-4 gap-2">
+                {order.items.map((item) => (
+                  <div
+                    key={item.productId}
+                    className="flex items-center lg:gap-4 gap-2"
+                  >
                     <img
                       src={`http://localhost:3000/assets/snacks/${item.image}`}
                       alt={item.name}
@@ -385,9 +419,6 @@ export default function AdminPage() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   saveProduct();
-                  console.log(editMode);
-                  console.log(editingProduct?.id);
-                  console.log("kuk: " + formData.image);
                 }}
               >
                 <input
