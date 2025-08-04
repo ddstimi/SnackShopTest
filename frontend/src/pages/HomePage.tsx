@@ -302,19 +302,20 @@ export default function HomePage() {
           Termékeink
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-6 lg:w-7xl md:gap-6 md:max-w-7xl items-center  justify-center content-center place-items-center gap-4 max-w-sm container-sm  mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 lg:gap-6 lg:w-fit md:gap-6 md:max-w-7xl items-center  justify-center content-center place-items-center gap-4 max-w-sm container-sm  mx-auto">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
-              className="bg-white/70 rounded-xl max-w-[80%] max-h-[99%] shadow-lg backdrop-blur-sm overflow-hidden lg:hover:scale-102 transition-transform duration-300 p-2"
+              className="bg-white/70 rounded-xl lg:max-w-[80%] lg:w-[80%] w-[55%] shadow-lg backdrop-blur-sm overflow-hidden lg:hover:scale-102 transition-transform duration-300 p-2"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
               <img
                 src={
-                  `http://localhost:3000/assets/snacks/${product.image}` ||
-                  "http://localhost:3000/assets/snacks/no_image.jpg"
+                  product.image
+                    ? `http://localhost:3000/assets/snacks/${product.image}`
+                    : "http://localhost:3000/assets/snacks/no_image.png"
                 }
                 alt={product.name || "Nincs kép"}
                 className=" w-[8rem] h-[8rem] object-contain align-middle m-auto"
@@ -322,7 +323,7 @@ export default function HomePage() {
               <div className="lg:p-4 p-2">
                 <h3 className="text-md font-semibold">{product.name}</h3>
 
-                <div className="mt-4 flex justify-between items-center gap-3">
+                <div className="mt-4 flex justify-between items-center gap-3 wrap-break-word">
                   <span className="text-md font-bold text-lorange w-fit">
                     {product.price} Ft
                   </span>

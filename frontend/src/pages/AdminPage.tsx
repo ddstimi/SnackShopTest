@@ -261,19 +261,19 @@ export default function AdminPage() {
           <h2 className="lg:text-5xl text-2xl font-bold text-center text-white lg:mb-10 mb-6 drop-shadow">
             Termékek
           </h2>
-          <div className="grid lg:gap-6 lg:max-w-9xl md:gap-6 md:max-w-7xl items-center justify-center content-center place-items-center gap-4 max-w-sm container-sm align-middle justify-items-center m-auto">
+          <div className="grid lg:gap-6 lg:max-w-9xl md:gap-6 md:max-w-7xl items-center justify-center content-center font-poppins place-items-center gap-4 max-w-sm container-sm align-middle justify-items-center m-auto">
             <div className="lg:max-w-8xl m-auto">
               <div className="flex justify-items-end justify-end mb-6">
                 <button
                   onClick={openAddModal}
-                  className="bg-lorange text-white text-sm lg:px-4 px-2 py-2 rounded-lg hover:bg-lorange/80 flex items-center float-right gap-2"
+                  className="bg-lorange text-white text-sm lg:px-4 px-2 py-2 rounded-lg hover:bg-lorange/80 flex items-center float-right mr-4 gap-2"
                 >
                   <span className="material-symbols-outlined">add</span>
                   Új termék
                 </button>
               </div>
 
-              <div className="bg-white/80 rounded-xl lg:min-w-3xl shadow-lg backdrop-blur-sm overflow-hidden">
+              <div className="bg-white/80 rounded-xl lg:min-w-3xl shadow-lg backdrop-blur-sm overflow-hidden text-center">
                 <table className="min-w-full lg:divide-y text-xs lg:text-2xl divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -308,13 +308,13 @@ export default function AdminPage() {
                             src={
                               product.image
                                 ? `http://localhost:3000/assets/snacks/${product.image}`
-                                : "http://localhost:3000/assets/snacks/no_image.jpg"
+                                : "http://localhost:3000/assets/snacks/no_image.png"
                             }
                             alt={product.name || "Nincs kép"}
                             className="lg:h-10 lg:w-10 h-5 w-5 text-xs lg:text-xl object-contain"
                           />
                         </td>
-                        <td className="lg:px-6 lg:py-4 p-1 whitespace-nowrap lg:text-sm text-gray-900">
+                        <td className="lg:px-6 lg:py-4 p-1 whitespace-nowrap lg:text-sm text-gray-900 text-start">
                           {product.name}
                         </td>
                         <td className="lg:px-6 lg:py-4 p-1 whitespace-nowrap lg:text-sm text-gray-500">
@@ -357,9 +357,9 @@ export default function AdminPage() {
 
       <div
         ref={orderRef}
-        className="min-h-screen bg-gradient-to-bl from-cyan-800/30 via-lorange/30 to-cyan-800/30 lg:p-10 p-4 pt-20 "
+        className="min-h-screen bg-gradient-to-bl from-cyan-800/30 via-lorange/30 to-cyan-800/30 lg:p-10 p-4 pt-20 font-poppins "
       >
-        <h2 className="text-2xl lg:text-5xl text-center text-white mb-10 lg:mt-10 drop-shadow">
+        <h2 className="lg:text-5xl text-2xl font-bold text-center text-white lg:mb-10 mt-10 drop-shadow">
           Rendelések
         </h2>
 
@@ -377,7 +377,7 @@ export default function AdminPage() {
                 </span>
                 <span>{new Date(order.createdAt).toLocaleString()}</span>
               </div>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-4 lg:gap-16">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-4 lg:gap-6">
                 {order.items.map((item) => (
                   <div
                     key={item.productId}
