@@ -39,7 +39,6 @@ DB_PATH=./db/snackshop.db
 - Felhasználónév: admin
 - Jelszó: SnackBoss2025
 ## Futtatás
-### Manuális
   Backend
   ```
   cd backend
@@ -54,9 +53,3 @@ DB_PATH=./db/snackshop.db
   npm install
   npm run dev
   ```
-### Docker
-```
-docker-compose up --build
-```
-    Frontend: http://localhost:5173
-    Backend: http://localhost:3000
