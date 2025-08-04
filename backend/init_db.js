@@ -65,7 +65,7 @@ async function init() {
         console.log('admin user already exists.');
     }
 
-    console.log('Database initialized.');
+    // console.log('Database initialized.');
     await db.close();
 }
 

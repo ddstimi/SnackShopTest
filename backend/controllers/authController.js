@@ -32,7 +32,7 @@ export async function loginUser(request, reply) {
   if (!authenticated) {
     return reply.code(401).send({ authenticated: false });
   }
-  console.log('Setting cookie for:', username);
+  // console.log('Setting cookie for:', username);
     reply.setCookie('username', username, {
         path: '/',
         httpOnly: true,
@@ -41,7 +41,7 @@ export async function loginUser(request, reply) {
         maxAge: 3600 * 24,
         signed: true,
     });
-  console.log('cookie set for:', username);
+  // console.log('cookie set for:', username);
 
 
   return reply.code(200).send({

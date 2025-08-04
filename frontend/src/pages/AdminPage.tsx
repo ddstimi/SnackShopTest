@@ -310,7 +310,7 @@ export default function AdminPage() {
                                 ? `http://localhost:3000/assets/snacks/${product.image}`
                                 : "http://localhost:3000/assets/snacks/no_image.jpg"
                             }
-                            alt={product.name}
+                            alt={product.name || "Nincs kép"}
                             className="lg:h-10 lg:w-10 h-5 w-5 text-xs lg:text-xl object-contain"
                           />
                         </td>
