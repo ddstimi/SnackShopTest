@@ -1,7 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import bcrypt from 'bcrypt';
-
 import dotenv from 'dotenv';
 
 async function init() {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api/axios";
-import { Navigate, Router, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
