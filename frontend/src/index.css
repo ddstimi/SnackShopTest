@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
+  --color-lorange:#DF6D2D;
+  --color-dgreen: #638C6D;
+  --color-sage:#D9EDBF;
+  --color-pgreen: #90D26D;
+  --color-lgreen:#7FB58C;
+  --color-llight:#E7FBB4;
+  --color-dorange:#C84C05;
+  --color-dviolet:#555879;
+  --color-lviolet:#98A1BC;
+
+  --font-poppins:"Poppins", "sans-serif";
+}
+
+@keyframes slowspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.slow-spin {
+  animation: slowspin 25s linear infinite;
+}
