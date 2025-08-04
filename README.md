@@ -44,6 +44,7 @@ DB_PATH=./db/snackshop.db
   ```
   cd backend
   npm install
+  npm run init-db
   npm run dev
   ```
   
